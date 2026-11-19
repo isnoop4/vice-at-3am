@@ -55,6 +55,8 @@ function renderLibrary() {
     b.appendChild(cap);
     b.addEventListener('click', () => {
       state.panels[state.selected].photoId = item.id;
+      const role = item.role;
+      if (role) state.panels[state.selected].chip.role = role;
       state.panels[state.selected].zoom = 1;
       state.panels[state.selected].ox = 0;
       state.panels[state.selected].oy = 0;
@@ -65,7 +67,7 @@ function renderLibrary() {
 }
 
 // --- Panel picker + zoom slider + chip fields for the selected panel. ---
-const PANEL_NAMES = ['Hero', 'Scene 1', 'Scene 2', 'Scene 3'];
+const PANEL_NAMES = ['The Driver — hero', 'The Insider', 'The Boss', 'The Rider', 'The Courier'];
 function renderPanels() {
   const box = $('panels');
   box.innerHTML = '';
@@ -73,7 +75,7 @@ function renderPanels() {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'panel-btn' + (state.selected === i ? ' selected' : '');
-    b.textContent = `${PANEL_NAMES[i]} — ${panel.chip.place}`;
+    b.textContent = `${PANEL_NAMES[i]} — ${panel.chip.role || panel.chip.place}`;
     b.addEventListener('click', () => {
       state.selected = i;
       redraw();
@@ -86,6 +88,7 @@ function syncPanelControls() {
   renderPanels();
   const panel = state.panels[state.selected];
   $('zoom').value = String(panel.zoom ?? 1);
+  $('chip-role').value = panel.chip.role || '';
   $('chip-place').value = panel.chip.place;
   $('chip-time').value = panel.chip.time;
   $('chip-quip').value = panel.chip.quip;
@@ -162,6 +165,8 @@ function bindControls() {
   $('title').addEventListener('input', (e) => { state.title = e.target.value.toUpperCase(); redraw(); });
   $('subtitle').addEventListener('input', (e) => { state.subtitle = e.target.value; redraw(); });
   $('tagline').addEventListener('input', (e) => { state.tagline = e.target.value.toUpperCase(); redraw(); });
+  $('quote').addEventListener('input', (e) => { state.quote = e.target.value; redraw(); });
+  $('chip-role').addEventListener('input', (e) => { state.panels[state.selected].chip.role = e.target.value; redraw(); });
   $('chip-place').addEventListener('input', (e) => { state.panels[state.selected].chip.place = e.target.value; redraw(); });
   $('chip-time').addEventListener('input', (e) => { state.panels[state.selected].chip.time = e.target.value; redraw(); });
   $('chip-quip').addEventListener('input', (e) => { state.panels[state.selected].chip.quip = e.target.value; redraw(); });

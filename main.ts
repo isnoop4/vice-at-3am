@@ -1,20 +1,21 @@
 // VICE AT 3 AM — the entry program for gta6-cover-art-01 (Node 22,
 // standard library only). The app is this directory's app/ folder: plain
 // static files a desktop browser loads offline (app/index.html and its ES
-// modules, two OFL fonts, four image-model-made sample photos, no library
-// and no network request). The program hands it in: it first runs a
-// pre-flight gate over the entry (checkEntry), then copies app/ and
-// screenshots/ from beside this file to /output and writes
-// /output/dossier.json, the summary the judge reads, with the vendored
-// make.fun library.
+// modules, two OFL fonts, nine image-model-made sample photos — five cast
+// portraits and four night scenes — no library and no network request).
+// The program hands it in: it first runs a pre-flight gate over the entry
+// (checkEntry), then copies app/ and screenshots/ from beside this file to
+// /output and writes /output/dossier.json, the summary the judge reads,
+// with the vendored make.fun library.
 //
 // The gate exists because the scorer refuses an entry that breaks its
 // caps, and a refused entry is never judged: it checks the screenshots
 // (3 or 4 files, each at most 256 KiB, a whole PNG or JPEG), the app tree
 // (at most 993 files and directories, 48 MiB in all, every path at most
-// 1000 bytes, no symlinks) and that app/index.html exists. The caps are
-// named constants, shared with buildDossier below, so the gate and the
-// dossier can never drift apart.
+// 1000 bytes, no symlinks), that app/index.html exists, and that the
+// sample library still holds the five cast portraits the cover is built
+// on. The caps are named constants, shared with buildDossier below, so
+// the gate and the dossier can never drift apart.
 //
 // Serve the app locally with `cd app && python3 -m http.server 8080`,
 // then open http://localhost:8080. Outside the grader's container,
@@ -35,6 +36,8 @@ const MAX_APP_FILES = 993;
 const MAX_APP_BYTES = 50331648;
 const MAX_APP_PATH_BYTES = 1000;
 const DOSSIER_TEXT_MAX_BYTES = 163840;
+const MIN_SAMPLE_PHOTOS = 5;
+const CAST_SAMPLES = ['cast-driver', 'cast-insider', 'cast-boss', 'cast-rider', 'cast-courier'];
 
 const SCREENSHOT_NAME = /^[A-Za-z0-9._-]+$/;
 const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
@@ -93,6 +96,20 @@ export function checkEntry(here) {
   }
   if (app.bytes > MAX_APP_BYTES) {
     fail(`app/ is ${app.bytes} bytes, over ${MAX_APP_BYTES}`);
+  }
+
+  // The cast cover needs its five portraits in the sample library.
+  const samplesDir = join(appDir, 'samples');
+  const samples = existsSync(samplesDir)
+    ? readdirSync(samplesDir).filter((n) => n.endsWith('.jpg') || n.endsWith('.jpeg') || n.endsWith('.png'))
+    : [];
+  if (samples.length < MIN_SAMPLE_PHOTOS) {
+    fail(`app/samples/ holds ${samples.length} photos, need at least ${MIN_SAMPLE_PHOTOS}`);
+  }
+  for (const cast of CAST_SAMPLES) {
+    if (!samples.some((n) => n.startsWith(cast))) {
+      fail(`app/samples/ is missing the ${cast} portrait`);
+    }
   }
 
   const shotsDir = join(here, 'screenshots');
