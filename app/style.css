@@ -1,0 +1,106 @@
+/* VICE AT 3 AM — Cover Studio: a cold-blue night editor. */
+@font-face {
+  font-family: 'Anton';
+  src: url('./fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Yellowtail';
+  src: url('./fonts/Yellowtail-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+html, body { margin: 0; min-height: 100%; background: #050d18; color: #eaf6ff; font: 15px/1.45 system-ui, sans-serif; }
+* { box-sizing: border-box; }
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 20px; background: #071223; border-bottom: 1px solid #12324a;
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { font-family: Anton, 'Arial Black', sans-serif; font-size: 22px; letter-spacing: 1px; color: #fff; }
+.brand-mark {
+  display: inline-block; background: #00e5ff; color: #04101f; border-radius: 4px;
+  padding: 1px 7px; margin-right: 8px; font-size: 16px; vertical-align: 2px;
+}
+.brand-sub { font-family: Yellowtail, cursive; font-size: 18px; color: #ff4fd8; letter-spacing: 0; margin-left: 6px; }
+.top-actions { display: flex; gap: 10px; }
+
+.btn {
+  font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 8px;
+  border: 1px solid #1d4a63; background: #0a1a2e; color: #eaf6ff; cursor: pointer;
+}
+.btn.primary { background: #00e5ff; border-color: #00e5ff; color: #04101f; }
+.btn.ghost:hover { border-color: #00e5ff; color: #00e5ff; }
+.btn.primary:hover { background: #5ff0ff; }
+
+.app { display: flex; gap: 24px; padding: 20px; align-items: flex-start; }
+.controls { width: 340px; flex: none; display: flex; flex-direction: column; gap: 18px; }
+.group { background: #081426; border: 1px solid #12324a; border-radius: 12px; padding: 14px; }
+.group h2 {
+  margin: 0 0 10px; font-family: Anton, 'Arial Black', sans-serif;
+  font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; color: #00e5ff;
+}
+.hint { margin: 0 0 10px; color: #8fb4c9; font-size: 13px; }
+.foot { color: #5d7d92; font-size: 12px; margin: 0; }
+
+label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 13px; margin-bottom: 10px; }
+input[type=text] {
+  font: inherit; padding: 8px 10px; border: 1px solid #1d4a63; border-radius: 6px;
+  background: #04101f; color: #eaf6ff;
+}
+input[type=text]:focus { outline: 2px solid #00e5ff; outline-offset: 1px; }
+.slider { flex-direction: row; align-items: center; gap: 10px; }
+.slider input { flex: 1; accent-color: #00e5ff; }
+
+.library { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.thumb {
+  padding: 0; border: 2px solid #12324a; border-radius: 8px; overflow: hidden;
+  background: #04101f; cursor: pointer; text-align: left;
+}
+.thumb:hover { border-color: #00e5ff; }
+.thumb img { display: block; width: 100%; height: 74px; object-fit: cover; }
+.thumb span { display: block; padding: 5px 7px; font-size: 12px; color: #cfe9ff; }
+.upload {
+  display: block; text-align: center; padding: 10px; border: 1px dashed #1d4a63;
+  border-radius: 8px; color: #8fb4c9; cursor: pointer; margin: 0;
+}
+.upload:hover { border-color: #00e5ff; color: #00e5ff; }
+
+.panels { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.panel-btn {
+  font: inherit; text-align: left; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid #12324a; background: #04101f; color: #cfe9ff; cursor: pointer;
+}
+.panel-btn.selected { border-color: #00e5ff; background: #0a2438; color: #fff; }
+.chip-edit { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.chip-edit label:first-child { grid-column: 1 / -1; }
+
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  font: inherit; font-weight: 700; padding: 8px 12px; border-radius: 20px;
+  border: 1px solid #1d4a63; background: #04101f; color: #cfe9ff; cursor: pointer;
+}
+.choice.selected { background: #00e5ff; border-color: #00e5ff; color: #04101f; }
+#status { margin: 10px 0 0; color: #7dff9e; font-size: 13px; min-height: 18px; }
+
+.stage { flex: 1; min-width: 0; position: sticky; top: 76px; }
+.stage canvas {
+  display: block; width: 100%; height: auto; max-height: calc(100vh - 140px);
+  object-fit: contain; border-radius: 6px;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55), 0 0 0 1px #12324a;
+  cursor: grab; background: #02060c;
+}
+.stage canvas:active { cursor: grabbing; }
+.stage-hint { color: #8fb4c9; font-size: 13px; text-align: center; }
+
+/* Screenshot scenes: the cover alone, full window. */
+body.shot-cover { background: #02060c; }
+body.shot-cover .topbar, body.shot-cover .controls, body.shot-cover .stage-hint { display: none; }
+body.shot-cover .app { padding: 0; display: block; }
+body.shot-cover .stage { position: static; }
+body.shot-cover canvas {
+  width: 100vw; height: 100vh; max-height: none; border-radius: 0; box-shadow: none;
+}

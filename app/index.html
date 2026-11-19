@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VICE AT 3 AM — Cover Studio</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">3AM</span> VICE AT 3 AM <span class="brand-sub">Cover Studio</span></div>
+  <div class="top-actions">
+    <button id="surprise" type="button" class="btn ghost">Surprise me</button>
+    <button id="export" type="button" class="btn primary">Export PNG</button>
+  </div>
+</header>
+<main class="app">
+  <section class="controls" id="controls">
+    <div class="group">
+      <h2>Photos</h2>
+      <p class="hint">Click a photo to put it in the selected panel. Your photos never leave this machine.</p>
+      <div class="library" id="library"></div>
+      <label class="upload">+ Add your photos<input id="upload" type="file" accept="image/*" multiple hidden></label>
+    </div>
+    <div class="group">
+      <h2>Panels</h2>
+      <div class="panels" id="panels"></div>
+      <label class="slider">Zoom <input id="zoom" type="range" min="1" max="3" step="0.05" value="1"></label>
+      <p class="hint">Drag the photo inside the preview to move it. Scroll over it to zoom.</p>
+    </div>
+    <div class="group">
+      <h2>Grade — one click</h2>
+      <div class="row" id="grades"></div>
+    </div>
+    <div class="group">
+      <h2>Layout</h2>
+      <div class="row" id="layouts"></div>
+    </div>
+    <div class="group">
+      <h2>Words</h2>
+      <label>Title <input id="title" type="text" maxlength="24" value="VICE AT 3 AM"></label>
+      <label>Subtitle <input id="subtitle" type="text" maxlength="40" value="the city never sleeps"></label>
+      <label>Tagline <input id="tagline" type="text" maxlength="60" value="THE CITY NEVER SLEEPS. NEITHER DO WE."></label>
+      <div class="chip-edit">
+        <label>Panel caption — place <input id="chip-place" type="text"></label>
+        <label>Time <input id="chip-time" type="text"></label>
+        <label>Quip <input id="chip-quip" type="text"></label>
+      </div>
+    </div>
+    <div class="group">
+      <h2>Size &amp; export</h2>
+      <div class="row" id="sizes"></div>
+      <p id="status" role="status"></p>
+    </div>
+    <p class="foot">VICE AT 3 AM — original cover art. No Rockstar Games logo, artwork or font. Title: Anton (OFL). Subtitle: Yellowtail (OFL). Sample photos made with an image model.</p>
+  </section>
+  <section class="stage">
+    <canvas id="preview" width="960" height="540" aria-label="Live cover preview"></canvas>
+    <p class="stage-hint">Live preview — click a panel to select it, drag to move the photo.</p>
+  </section>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
