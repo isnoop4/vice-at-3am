@@ -1,66 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VICE AT 3 AM — Cover Studio</title>
+<title>VICE AT 3 AM — GTA 6-style cover studio</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="style.css">
+<style>
+@font-face {
+  font-family: 'Anton';
+  src: url('fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Yellowtail';
+  src: url('fonts/Yellowtail-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+</style>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><span class="brand-mark">3AM</span> VICE AT 3 AM <span class="brand-sub">Cover Studio</span></div>
-  <div class="top-actions">
-    <button id="surprise" type="button" class="btn ghost">Surprise me</button>
-    <button id="export" type="button" class="btn primary">Export PNG</button>
-  </div>
+<header>
+  <h1>VICE AT 3 AM</h1>
+  <p>Turn your photos into a GTA 6-style multi-panel poster cover. Pick a cast, write the caption, export the PNG.</p>
 </header>
-<main class="app">
-  <section class="controls" id="controls">
-    <div class="group">
-      <h2>Photos</h2>
-      <p class="hint">Click a photo to put it in the selected panel. Your photos never leave this machine.</p>
-      <div class="library" id="library"></div>
-      <label class="upload">+ Add your photos<input id="upload" type="file" accept="image/*" multiple hidden></label>
-    </div>
-    <div class="group">
-      <h2>Panels</h2>
-      <div class="panels" id="panels"></div>
-      <label class="slider">Zoom <input id="zoom" type="range" min="1" max="3" step="0.05" value="1"></label>
-      <p class="hint">Drag the photo inside the preview to move it. Scroll over it to zoom.</p>
-    </div>
-    <div class="group">
-      <h2>Grade — one click</h2>
-      <div class="row" id="grades"></div>
-    </div>
-    <div class="group">
-      <h2>Layout</h2>
-      <div class="row" id="layouts"></div>
-    </div>
-    <div class="group">
-      <h2>Words</h2>
-      <label>Title <input id="title" type="text" maxlength="24" value="VICE AT 3 AM"></label>
-      <label>Subtitle <input id="subtitle" type="text" maxlength="40" value="the city never sleeps"></label>
-      <label>Tagline <input id="tagline" type="text" maxlength="60" value="FIVE FRIENDS · ONE CITY · NO WAY BACK."></label>
-      <label>Press quote <input id="quote" type="text" maxlength="40" value="RAIN-SOAKED NEON MAYHEM"></label>
-      <div class="chip-edit">
-        <label>Panel caption — role <input id="chip-role" type="text"></label>
-        <label>Place <input id="chip-place" type="text"></label>
-        <label>Time <input id="chip-time" type="text"></label>
-        <label>Quip <input id="chip-quip" type="text"></label>
-      </div>
-    </div>
-    <div class="group">
-      <h2>Size &amp; export</h2>
-      <div class="row" id="sizes"></div>
-      <p id="status" role="status"></p>
-    </div>
-    <p class="foot">VICE AT 3 AM — original cover art. No Rockstar Games logo, artwork or font. Title: Anton (OFL). Subtitle: Yellowtail (OFL). Sample photos made with an image model.</p>
-  </section>
+<main>
   <section class="stage">
-    <canvas id="preview" width="960" height="540" aria-label="Live cover preview"></canvas>
-    <p class="stage-hint">Live preview — click a panel to select it, drag to move the photo.</p>
+    <canvas id="preview" width="960" height="540"></canvas>
+    <p id="status" role="status">Loading the cast…</p>
   </section>
+  <aside class="panel">
+    <section>
+      <h2>Cover text</h2>
+      <label>Title <input id="title" value="VICE AT 3 AM" maxlength="24"></label>
+      <label>Script subtitle <input id="subtitle" value="one last summer in the city" maxlength="60"></label>
+      <label>Tagline <input id="tagline" value="FIVE FRIENDS · ONE CITY · NO WAY BACK." maxlength="60"></label>
+      <label>Press quote <input id="quote" value="PURE NEON MAYHEM" maxlength="40"></label>
+      <label>Quoted by <input id="quote-source" value="THE HARBOR GAZETTE" maxlength="40"></label>
+    </section>
+    <section>
+      <h2>Photo library</h2>
+      <p class="hint">Click a photo to put it in the selected panel. Or upload your own:</p>
+      <label class="upload">Upload photos <input id="upload" type="file" accept="image/*" multiple></label>
+      <div id="library" class="library"></div>
+    </section>
+    <section>
+      <h2>Selected panel</h2>
+      <div id="panels" class="panels"></div>
+      <label>Role label <input id="role" value="THE DRIVER" maxlength="20"></label>
+      <label>Place <input id="chip-place" value="Neon Blvd" maxlength="24"></label>
+      <label>Time <input id="chip-time" value="3:12 AM" maxlength="12"></label>
+      <label>Quip <input id="chip-quip" value="One last ride." maxlength="40"></label>
+      <label>Zoom <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1"></label>
+      <p class="hint">Drag the photo on the canvas to reposition it inside its panel.</p>
+    </section>
+    <section>
+      <h2>Grade</h2>
+      <div id="grades" class="choices"></div>
+    </section>
+    <section>
+      <h2>Layout</h2>
+      <div id="layouts" class="choices"></div>
+    </section>
+    <section>
+      <h2>Export size</h2>
+      <div id="sizes" class="choices"></div>
+    </section>
+    <div class="actions">
+      <button id="surprise" type="button">Surprise me</button>
+      <button id="export" type="button" class="primary">Export PNG</button>
+    </div>
+  </aside>
 </main>
 <script type="module" src="./src/main.js"></script>
 </body>

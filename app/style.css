@@ -1,106 +1,152 @@
-/* VICE AT 3 AM — Cover Studio: a cold-blue night editor. */
-@font-face {
-  font-family: 'Anton';
-  src: url('./fonts/Anton-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Yellowtail';
-  src: url('./fonts/Yellowtail-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-html, body { margin: 0; min-height: 100%; background: #050d18; color: #eaf6ff; font: 15px/1.45 system-ui, sans-serif; }
+/* VICE AT 3 AM — the editor chrome. The poster itself is painted on
+   the canvas by app/src/cover.js; this file only styles the page around it. */
 * { box-sizing: border-box; }
-
-.topbar {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 12px 20px; background: #071223; border-bottom: 1px solid #12324a;
-  position: sticky; top: 0; z-index: 10;
+body {
+  margin: 0;
+  background: #070b16;
+  color: #e8edf5;
+  font-family: Arial, Helvetica, sans-serif;
 }
-.brand { font-family: Anton, 'Arial Black', sans-serif; font-size: 22px; letter-spacing: 1px; color: #fff; }
-.brand-mark {
-  display: inline-block; background: #00e5ff; color: #04101f; border-radius: 4px;
-  padding: 1px 7px; margin-right: 8px; font-size: 16px; vertical-align: 2px;
+header { padding: 18px 24px 6px; }
+header h1 {
+  margin: 0;
+  font-family: Anton, sans-serif;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-size: 34px;
+  color: #fff;
+  text-shadow: 0 0 18px rgba(0, 210, 255, 0.7);
 }
-.brand-sub { font-family: Yellowtail, cursive; font-size: 18px; color: #ff4fd8; letter-spacing: 0; margin-left: 6px; }
-.top-actions { display: flex; gap: 10px; }
-
-.btn {
-  font: inherit; font-weight: 700; padding: 10px 16px; border-radius: 8px;
-  border: 1px solid #1d4a63; background: #0a1a2e; color: #eaf6ff; cursor: pointer;
+header p { margin: 6px 0 0; color: #9fb0cc; font-size: 14px; }
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  padding: 14px 24px 24px;
+  align-items: start;
 }
-.btn.primary { background: #00e5ff; border-color: #00e5ff; color: #04101f; }
-.btn.ghost:hover { border-color: #00e5ff; color: #00e5ff; }
-.btn.primary:hover { background: #5ff0ff; }
-
-.app { display: flex; gap: 24px; padding: 20px; align-items: flex-start; }
-.controls { width: 340px; flex: none; display: flex; flex-direction: column; gap: 18px; }
-.group { background: #081426; border: 1px solid #12324a; border-radius: 12px; padding: 14px; }
-.group h2 {
-  margin: 0 0 10px; font-family: Anton, 'Arial Black', sans-serif;
-  font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; color: #00e5ff;
-}
-.hint { margin: 0 0 10px; color: #8fb4c9; font-size: 13px; }
-.foot { color: #5d7d92; font-size: 12px; margin: 0; }
-
-label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 13px; margin-bottom: 10px; }
-input[type=text] {
-  font: inherit; padding: 8px 10px; border: 1px solid #1d4a63; border-radius: 6px;
-  background: #04101f; color: #eaf6ff;
-}
-input[type=text]:focus { outline: 2px solid #00e5ff; outline-offset: 1px; }
-.slider { flex-direction: row; align-items: center; gap: 10px; }
-.slider input { flex: 1; accent-color: #00e5ff; }
-
-.library { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-.thumb {
-  padding: 0; border: 2px solid #12324a; border-radius: 8px; overflow: hidden;
-  background: #04101f; cursor: pointer; text-align: left;
-}
-.thumb:hover { border-color: #00e5ff; }
-.thumb img { display: block; width: 100%; height: 74px; object-fit: cover; }
-.thumb span { display: block; padding: 5px 7px; font-size: 12px; color: #cfe9ff; }
-.upload {
-  display: block; text-align: center; padding: 10px; border: 1px dashed #1d4a63;
-  border-radius: 8px; color: #8fb4c9; cursor: pointer; margin: 0;
-}
-.upload:hover { border-color: #00e5ff; color: #00e5ff; }
-
-.panels { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-.panel-btn {
-  font: inherit; text-align: left; padding: 8px 10px; border-radius: 6px;
-  border: 1px solid #12324a; background: #04101f; color: #cfe9ff; cursor: pointer;
-}
-.panel-btn.selected { border-color: #00e5ff; background: #0a2438; color: #fff; }
-.chip-edit { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
-.chip-edit label:first-child { grid-column: 1 / -1; }
-
-.row { display: flex; flex-wrap: wrap; gap: 8px; }
-.choice {
-  font: inherit; font-weight: 700; padding: 8px 12px; border-radius: 20px;
-  border: 1px solid #1d4a63; background: #04101f; color: #cfe9ff; cursor: pointer;
-}
-.choice.selected { background: #00e5ff; border-color: #00e5ff; color: #04101f; }
-#status { margin: 10px 0 0; color: #7dff9e; font-size: 13px; min-height: 18px; }
-
-.stage { flex: 1; min-width: 0; position: sticky; top: 76px; }
 .stage canvas {
-  display: block; width: 100%; height: auto; max-height: calc(100vh - 140px);
-  object-fit: contain; border-radius: 6px;
-  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55), 0 0 0 1px #12324a;
-  cursor: grab; background: #02060c;
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #04060e;
+  border: 1px solid #22304d;
+  border-radius: 8px;
+  touch-action: none;
 }
-.stage canvas:active { cursor: grabbing; }
-.stage-hint { color: #8fb4c9; font-size: 13px; text-align: center; }
-
-/* Screenshot scenes: the cover alone, full window. */
-body.shot-cover { background: #02060c; }
-body.shot-cover .topbar, body.shot-cover .controls, body.shot-cover .stage-hint { display: none; }
-body.shot-cover .app { padding: 0; display: block; }
-body.shot-cover .stage { position: static; }
-body.shot-cover canvas {
-  width: 100vw; height: 100vh; max-height: none; border-radius: 0; box-shadow: none;
+#status { color: #9fb0cc; font-size: 13px; min-height: 18px; }
+.panel section {
+  background: #0d1526;
+  border: 1px solid #22304d;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.panel h2 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #7fd8ff;
+}
+.panel label {
+  display: block;
+  font-size: 12px;
+  color: #b9c6de;
+  margin-bottom: 8px;
+}
+.panel input[type="text"], .panel input:not([type]) {
+  width: 100%;
+  margin-top: 3px;
+  padding: 7px 8px;
+  border-radius: 5px;
+  border: 1px solid #33456b;
+  background: #0a1122;
+  color: #fff;
+  font-size: 14px;
+}
+.panel input[type="range"] { width: 100%; margin-top: 3px; }
+.hint { font-size: 12px; color: #8ba0c2; margin: 0 0 8px; }
+.upload {
+  display: inline-block;
+  padding: 7px 12px;
+  border: 1px dashed #4a6ea8;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #cfe4ff;
+  margin-bottom: 10px;
+}
+.upload input { display: none; }
+.library {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.thumb {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+}
+.thumb:hover, .thumb:focus-visible { border-color: #38c8ff; outline: none; }
+.thumb img { width: 100%; height: 64px; object-fit: cover; display: block; }
+.thumb span {
+  display: block;
+  font-size: 10px;
+  color: #b9c6de;
+  padding: 3px 4px;
+  background: #0a1122;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.panels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.panel-btn {
+  padding: 6px 9px;
+  border-radius: 20px;
+  border: 1px solid #33456b;
+  background: #0a1122;
+  color: #cfe0ff;
+  font-size: 12px;
+  cursor: pointer;
+}
+.panel-btn.selected { background: #155e85; border-color: #38c8ff; color: #fff; }
+.choices { display: flex; flex-wrap: wrap; gap: 6px; }
+.choice {
+  padding: 7px 11px;
+  border-radius: 6px;
+  border: 1px solid #33456b;
+  background: #0a1122;
+  color: #cfe0ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.choice.selected { background: #155e85; border-color: #38c8ff; color: #fff; }
+.actions { display: flex; gap: 10px; }
+.actions button {
+  flex: 1;
+  padding: 11px;
+  border-radius: 7px;
+  border: 1px solid #33456b;
+  background: #12203a;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+.actions button.primary { background: #0e7490; border-color: #38c8ff; font-weight: bold; }
+/* Screenshot scenes: the cover alone, no editor chrome. */
+body.shot-cover { background: #04060e; }
+body.shot-cover header,
+body.shot-cover .panel,
+body.shot-cover #status { display: none; }
+body.shot-cover main { display: block; padding: 0; }
+body.shot-cover .stage canvas {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
 }
