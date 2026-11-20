@@ -6,74 +6,55 @@
 <title>VICE AT 3 AM — GTA 6-style cover studio</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
-<style>
-@font-face {
-  font-family: 'Anton';
-  src: url('fonts/Anton-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Yellowtail';
-  src: url('fonts/Yellowtail-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-</style>
 </head>
 <body>
-<header>
-  <h1>VICE AT 3 AM</h1>
-  <p>Turn your photos into a GTA 6-style multi-panel poster cover. Pick a cast, write the caption, export the PNG.</p>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">VICE AT 3 AM</span><span class="brand-sub">cold-blue night cover studio</span></div>
+  <div class="top-actions">
+    <button id="surprise" type="button">Surprise me</button>
+    <button id="export" type="button" class="primary">Export PNG</button>
+  </div>
 </header>
-<main>
+<main class="workbench">
   <section class="stage">
     <canvas id="preview" width="960" height="540"></canvas>
-    <p id="status" role="status">Loading the cast…</p>
+    <p id="status" class="status">Loading the cast…</p>
   </section>
   <aside class="panel">
-    <section>
+    <section class="group">
       <h2>Cover text</h2>
       <label>Title <input id="title" value="VICE AT 3 AM" maxlength="24"></label>
-      <label>Script subtitle <input id="subtitle" value="one last summer in the city" maxlength="60"></label>
-      <label>Tagline <input id="tagline" value="FIVE FRIENDS · ONE CITY · NO WAY BACK." maxlength="60"></label>
+      <label>Script subtitle <input id="subtitle" value="one last summer in the city" maxlength="48"></label>
+      <label>Tagline <input id="tagline" value="FIVE FRIENDS · ONE CITY · NO WAY BACK." maxlength="64"></label>
       <label>Press quote <input id="quote" value="PURE NEON MAYHEM" maxlength="40"></label>
-      <label>Quoted by <input id="quote-source" value="THE HARBOR GAZETTE" maxlength="40"></label>
     </section>
-    <section>
-      <h2>Photo library</h2>
-      <p class="hint">Click a photo to put it in the selected panel. Or upload your own:</p>
-      <label class="upload">Upload photos <input id="upload" type="file" accept="image/*" multiple></label>
-      <div id="library" class="library"></div>
-    </section>
-    <section>
-      <h2>Selected panel</h2>
-      <div id="panels" class="panels"></div>
-      <label>Role label <input id="role" value="THE DRIVER" maxlength="20"></label>
-      <label>Place <input id="chip-place" value="Neon Blvd" maxlength="24"></label>
-      <label>Time <input id="chip-time" value="3:12 AM" maxlength="12"></label>
-      <label>Quip <input id="chip-quip" value="One last ride." maxlength="40"></label>
-      <label>Zoom <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1"></label>
-      <p class="hint">Drag the photo on the canvas to reposition it inside its panel.</p>
-    </section>
-    <section>
+    <section class="group">
       <h2>Grade</h2>
       <div id="grades" class="choices"></div>
-    </section>
-    <section>
       <h2>Layout</h2>
       <div id="layouts" class="choices"></div>
-    </section>
-    <section>
       <h2>Export size</h2>
       <div id="sizes" class="choices"></div>
     </section>
-    <div class="actions">
-      <button id="surprise" type="button">Surprise me</button>
-      <button id="export" type="button" class="primary">Export PNG</button>
-    </div>
+    <section class="group">
+      <h2>Panels — click a photo to place it</h2>
+      <div id="panels" class="panel-list"></div>
+      <label>Role label <input id="chip-role" value="THE DRIVER" maxlength="18"></label>
+      <label>Place <input id="chip-place" value="VICE CITY" maxlength="24"></label>
+      <label>Time <input id="chip-time" value="3:00 AM" maxlength="12"></label>
+      <label>Quip <input id="chip-quip" value="“One last job.”" maxlength="40"></label>
+      <label>Zoom <input id="zoom" type="range" min="1" max="2.5" step="0.05" value="1"></label>
+      <p class="hint">Drag the photo on the canvas to reposition it inside its panel.</p>
+    </section>
+    <section class="group">
+      <h2>Photo library</h2>
+      <div id="library" class="library"></div>
+      <label class="upload">Add your own photo
+        <input id="upload" type="file" accept="image/*" multiple hidden>
+      </label>
+    </section>
   </aside>
 </main>
-<script type="module" src="./src/main.js"></script>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>

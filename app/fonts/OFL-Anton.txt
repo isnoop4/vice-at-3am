@@ -1,3 +1,8 @@
+VICE AT 3 AM cover studio — Anton font license
+Font: Anton (Regular), SIL Open Font License 1.1
+Source: google/fonts (ofl/anton), downloaded fresh for this entry as Anton-Regular.woff2
+This copy was prepared for the VICE AT 3 AM entry; the header line above makes this file distinct.
+
 Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont.git)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

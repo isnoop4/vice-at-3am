@@ -1,37 +1,27 @@
-// VICE AT 3 AM — the editor: state, the photo library, canvas drag
-// gestures, and Surprise me. The cover itself is painted by cover.js;
-// this file only owns the interactive state around it.
-
-import { GRADES, LAYOUTS } from './cover.js';
+// VICE AT 3 AM — editor state: the default poster, the photo library,
+// pointer-drag positioning, and the Surprise me randomiser.
+import { computeLayout } from './cover.js';
 
 export const SAMPLE_PHOTOS = [
-  { id: 'cast-driver', name: 'The Driver — convertible', src: 'samples/cast-driver.jpg' },
-  { id: 'cast-insider', name: 'The Insider — purple neon', src: 'samples/cast-insider.jpg' },
-  { id: 'cast-boss', name: 'The Boss — rooftop', src: 'samples/cast-boss.jpg' },
-  { id: 'cast-rider', name: 'The Rider — motorcycle', src: 'samples/cast-rider.jpg' },
-  { id: 'cast-courier', name: 'The Courier — neon shop', src: 'samples/cast-courier.jpg' },
-  { id: 'scene-street', name: 'Neon boulevard', src: 'samples/scene-street.jpg' },
-  { id: 'scene-motel', name: 'Motel sign', src: 'samples/scene-motel.jpg' },
+  { id: 'cast-driver', src: 'samples/cast-driver.jpg', name: 'The Driver — convertible, night' },
+  { id: 'cast-insider', src: 'samples/cast-insider.jpg', name: 'The Insider — violet neon' },
+  { id: 'cast-boss', src: 'samples/cast-boss.jpg', name: 'The Boss — downtown' },
+  { id: 'cast-rider', src: 'samples/cast-rider.jpg', name: 'The Rider — motorcycle' },
+  { id: 'cast-courier', src: 'samples/cast-courier.jpg', name: 'The Courier — floral shirt' },
+  { id: 'scene-street', src: 'samples/scene-street.jpg', name: 'Neon street — rain' },
+  { id: 'scene-motel', src: 'samples/scene-motel.jpg', name: 'Motel sign — night' },
 ];
 
-export const PANEL_ROLES = ['THE DRIVER', 'THE INSIDER', 'THE BOSS', 'THE RIDER', 'THE COURIER'];
-
-const DEFAULT_CHIPS = [
-  { place: 'Neon Blvd', time: '3:12 AM', quip: 'One last ride.' },
-  { place: 'The Voodoo Room', time: '1:40 AM', quip: 'She knows everything.' },
-  { place: 'Rooftop', time: 'Midnight', quip: 'The city is mine.' },
-  { place: 'Ocean Drive', time: '2:05 AM', quip: 'Full throttle.' },
-  { place: 'Corner Store', time: '3:33 AM', quip: 'Special delivery.' },
+const ROLES = ['THE DRIVER', 'THE INSIDER', 'THE BOSS', 'THE RIDER', 'THE COURIER'];
+const CAST_IDS = ['cast-driver', 'cast-insider', 'cast-boss', 'cast-rider', 'cast-courier'];
+const CHIPS = [
+  { place: 'VICE CITY', time: '3:00 AM', quip: '“One last job.”' },
+  { place: 'THE PIER', time: '11:47 PM', quip: '“I know a guy.”' },
+  { place: 'DOWNTOWN', time: '2:15 AM', quip: '“This city is mine.”' },
+  { place: 'THE STRIP', time: '1:05 AM', quip: '“Catch me if you can.”' },
+  { place: 'LITTLE HAVANA', time: '4:20 AM', quip: '“Special delivery.”' },
 ];
-
-export const SURPRISE_TITLES = [
-  'VICE AT 3 AM',
-  'NEON HARBOR',
-  'MIDNIGHT RUNNERS',
-  'THE LAST SUMMER',
-  'PALM & PAVEMENT',
-  'CITY OF STATIC',
-];
+const ANCHORS = [0.33, 0.33, 0.33, 0.12, 0.33];
 
 export function defaultState() {
   return {
@@ -44,133 +34,137 @@ export function defaultState() {
     layout: 'tilted',
     size: '1920x1080',
     selected: 0,
-    panels: PANEL_ROLES.map((role, i) => ({
-      photoId: SAMPLE_PHOTOS[i].id,
+    panels: ROLES.map((role, i) => ({
+      photoId: CAST_IDS[i],
       role,
-      chip: { ...DEFAULT_CHIPS[i] },
+      chip: { ...CHIPS[i] },
       zoom: 1,
       ox: 0,
       oy: 0,
-      // The rider's face sits high in his photo; anchor his crop near
-      // the top so it survives the wide-short panels.
-      anchor: i === 3 ? 0.10 : 0.33,
-      img: null,
+      anchor: ANCHORS[i],
     })),
   };
 }
 
-// The photo library: the seven sample photos plus anything the person
-// uploads from their own machine. Uploads are read locally with an
-// object URL and never leave the browser.
+export function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`could not load ${src}`));
+    img.src = src;
+  });
+}
+
 export class PhotoLibrary {
   constructor() {
-    this.items = [];
+    this.items = SAMPLE_PHOTOS.map((p) => ({ ...p }));
+    this.images = new Map();
   }
 
   async loadSamples() {
-    const loaded = await Promise.all(
-      SAMPLE_PHOTOS.map(async (p) => {
-        const img = new Image();
-        img.src = p.src;
-        try {
-          await img.decode();
-        } catch {
-          await new Promise((resolve) => {
-            img.onload = resolve;
-            img.onerror = resolve;
-          });
-        }
-        return { ...p, img };
-      }),
-    );
-    this.items = loaded;
-    return loaded;
+    await Promise.all(this.items.map(async (item) => {
+      const img = await loadImage(item.src);
+      this.images.set(item.id, img);
+    }));
   }
 
   async addFile(file) {
     const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.src = url;
-    await img.decode().catch(() => undefined);
-    const item = {
-      id: `upload-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      name: file.name,
-      src: url,
-      img,
-    };
+    const img = await loadImage(url);
+    const item = { id: `upload-${Date.now()}`, src: url, name: file.name || 'Your photo' };
     this.items.push(item);
+    this.images.set(item.id, img);
     return item;
   }
 
-  byId(id) {
-    return this.items.find((item) => item.id === id) || null;
+  image(id) {
+    return this.images.get(id) || null;
   }
 }
 
-// Attach the loaded images to the state's panels for one draw.
+// Resolve panel photo ids to loaded images for the painter.
 export function resolvePanels(state, library) {
-  return state.panels.map((panel) => {
-    const item = library.byId(panel.photoId);
-    return { ...panel, img: item ? item.img : null };
-  });
+  return state.panels.map((p) => ({ ...p, img: library.image(p.photoId) }));
 }
 
-// Drag the photo inside the selected panel: pointer down on the canvas
-// picks the panel under the cursor, dragging pans its crop (ox/oy).
-// layout is the panel rects drawCover returned for this canvas size.
-export function attachCanvasGestures(canvas, state, getLayout, redraw) {
+// Which panel sits under a point on the preview canvas, in preview pixels.
+export function panelAtPoint(state, px, py, previewW, previewH) {
+  const L = computeLayout(previewW, previewH, state.layout);
+  const sx = previewW / 1920;
+  const sy = previewH / 1080;
+  void sx;
+  void sy;
+  // The painter scales the whole layout to the preview size, so recompute
+  // the layout at the preview size and test each panel rect directly.
+  for (let i = L.panels.length - 1; i >= 0; i--) {
+    const r = L.panels[i];
+    if (px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) return i;
+  }
+  return -1;
+}
+
+// Pointer drag on the canvas repositions the selected panel's photo.
+export function attachCanvasGestures(canvas, state, library, redraw) {
   let drag = null;
-  const pos = (e) => {
-    const r = canvas.getBoundingClientRect();
-    return {
-      x: ((e.clientX - r.left) / r.width) * canvas.width,
-      y: ((e.clientY - r.top) / r.height) * canvas.height,
-    };
+  const toLocal = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    return { x: (e.clientX - rect.left) * (canvas.width / rect.width), y: (e.clientY - rect.top) * (canvas.height / rect.height) };
   };
   canvas.addEventListener('pointerdown', (e) => {
-    const p = pos(e);
-    const layout = getLayout();
-    if (!layout) return;
-    const idx = layout.panels.findIndex(
-      (r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h,
-    );
-    if (idx < 0) return;
-    state.selected = idx;
-    drag = { x: p.x, y: p.y, ox: state.panels[idx].ox, oy: state.panels[idx].oy, w: layout.panels[idx].w, h: layout.panels[idx].h };
-    canvas.setPointerCapture(e.pointerId);
-    redraw();
+    const p = toLocal(e);
+    const hit = panelAtPoint(state, p.x, p.y, canvas.width, canvas.height);
+    if (hit >= 0) {
+      state.selected = hit;
+      drag = { x: p.x, y: p.y, ox: state.panels[hit].ox, oy: state.panels[hit].oy };
+      canvas.setPointerCapture(e.pointerId);
+      redraw();
+    }
   });
   canvas.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    const p = pos(e);
+    const p = toLocal(e);
     const panel = state.panels[state.selected];
-    panel.ox = Math.max(-1, Math.min(1, drag.ox + ((p.x - drag.x) / drag.w) * 2));
-    panel.oy = Math.max(-1, Math.min(1, drag.oy + ((p.y - drag.y) / drag.h) * 2));
+    const L = computeLayout(canvas.width, canvas.height, state.layout);
+    const r = L.panels[state.selected];
+    panel.ox = Math.max(-1, Math.min(1, drag.ox + ((p.x - drag.x) / r.w) * 4));
+    panel.oy = Math.max(-1, Math.min(1, drag.oy + ((p.y - drag.y) / r.h) * 4));
     redraw();
   });
-  const end = () => {
-    drag = null;
-  };
+  const end = () => { drag = null; };
   canvas.addEventListener('pointerup', end);
   canvas.addEventListener('pointercancel', end);
 }
 
-// Surprise me: a new title, a random grade and layout, and the photos
-// shuffled across the panels.
+const SURPRISE_TITLES = [
+  'VICE AT 3 AM',
+  'NEON HARBOR',
+  'MIDNIGHT RUN',
+  'PALM & PISTOL',
+  'THE LONG NIGHT',
+  'CITY OF NEON',
+];
+const SURPRISE_SUBS = [
+  'one last summer in the city',
+  'the city never sleeps. neither do we.',
+  'five friends. one score. no way back.',
+  'every light hides a story.',
+];
+const GRADES = ['night', 'ember', 'sunset', 'ink', 'duotone'];
+const LAYOUTS = ['tilted', 'bleed'];
+
 export function surpriseMe(state, library) {
-  const titles = SURPRISE_TITLES.filter((t) => t !== state.title);
-  state.title = titles[Math.floor(Math.random() * titles.length)];
-  const grades = Object.keys(GRADES);
-  state.grade = grades[Math.floor(Math.random() * grades.length)];
-  const layouts = Object.keys(LAYOUTS);
-  state.layout = layouts[Math.floor(Math.random() * layouts.length)];
-  const ids = state.panels.map((p) => p.photoId);
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  state.title = pick(SURPRISE_TITLES);
+  state.subtitle = pick(SURPRISE_SUBS);
+  state.grade = pick(GRADES);
+  state.layout = pick(LAYOUTS);
+  const ids = [...library.items.map((i) => i.id)];
   for (let i = ids.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [ids[i], ids[j]] = [ids[j], ids[i]];
   }
   state.panels.forEach((p, i) => {
-    p.photoId = ids[i];
+    p.photoId = ids[i % ids.length];
     p.zoom = 1;
     p.ox = 0;
     p.oy = 0;

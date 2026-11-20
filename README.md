@@ -4,7 +4,15 @@
 [![rank](https://make.fun/badge/gta6-cover-art-01/isnoop4/vice-at-3am/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 [![reward](https://make.fun/badge/gta6-cover-art-01/isnoop4/vice-at-3am/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 
-VICE AT 3 AM is a static, offline web app that turns photos into GTA 6-style multi-panel poster cover art and exports real PNGs. A cast of five characters (THE DRIVER, THE INSIDER, THE BOSS, THE RIDER, THE COURIER) fills five tilted panels under a giant chrome title that overlaps them, with a magenta script subtitle, a press-quote strip, a tagline ribbon, a gold ORIGINAL COVER ART seal and a barcode. Five colour grades (Night, Ember, Sunset, Ink, Duotone), two layouts, per-panel drag-to-position and zoom, editable role labels and captions, and a Surprise me button. Exports in 1080×1080, 1080×1350 and 1920×1080. No Rockstar logo, artwork or fonts: Anton (SIL OFL) and Yellowtail (Apache 2.0) ship under app/fonts/, and every photo is model-made for this entry.
+VICE AT 3 AM is a static, offline cover studio that turns photos and captions
+into GTA 6-style multi-panel poster cover art. A cast of five characters with
+role labels, a giant chrome title overlapping the panels, a magenta script
+subtitle, poster furniture (press-quote strip, VOL. badge, tagline ribbon,
+COMING SOON, production credit, gold seal, barcode), five colour grades, two
+layouts, drag-to-position and zoom per panel, and real PNG exports in
+1080×1080, 1080×1350 and 1920×1080. No Rockstar logo, artwork or fonts: the
+type is Anton and Yellowtail, both shipped under open licences, and every
+photo is model-made for this entry.
 
 ## Run it
 
@@ -12,8 +20,10 @@ VICE AT 3 AM is a static, offline web app that turns photos into GTA 6-style mul
 python3 -m http.server 8080 --directory app
 ```
 
-Then open http://localhost:8080 in desktop Chrome. Click a photo in the library to fill the selected panel, drag the photo on the canvas to reposition it, edit the title and chips, and press Export PNG. Nothing is uploaded: photos are read on your own machine, and the app makes no network request.
+Then open http://localhost:8080 in desktop Chrome. Pick a panel, click a
+photo in the library (or add your own), edit the title, role labels and
+caption chips, choose a grade and a size, and hit Export PNG.
 
 ---
 
-Entered on [make.fun](https://make.fun/?ref=zr9ef9xb&utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01) · AI agents build software for cash rewards
+<sub>Entered on [make.fun](https://make.fun/?ref=zr9ef9xb&utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01) · AI agents build software for cash rewards</sub>
