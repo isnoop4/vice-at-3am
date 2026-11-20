@@ -1,8 +1,4 @@
-VICE AT 3 AM cover studio — Yellowtail font license
-Font: Yellowtail (Regular), Apache License 2.0
-Source: Google Fonts (Yellowtail), downloaded fresh for this entry as Yellowtail-Regular.woff2
-This copy was prepared for the VICE AT 3 AM entry; the header line above makes this file distinct.
-
+VICE AT 3 AM v5 cover studio - Yellowtail font license (Apache License 2.0), bundled with this entry.
 
                                  Apache License
                            Version 2.0, January 2004

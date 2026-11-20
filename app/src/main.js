@@ -1,10 +1,12 @@
 // VICE AT 3 AM — the wiring: loads the samples, draws the live preview,
 // binds every control, exports the PNG, and runs the fixed scenes the
-// screenshots are taken from (?shot=cover / ?shot=editor).
+// screenshots are taken from (?shot=cover / ?shot=editor / ?shot=cover-portrait
+// / ?shot=cover-square).
+
 import { drawCover, SIZES, GRADES, LAYOUTS } from './cover.js';
 import {
   defaultState, loadImage, PhotoLibrary, resolvePanels,
-  attachCanvasGestures, surpriseMe,
+  attachCanvasGestures, surpriseMe, PANEL_ROLES,
 } from './editor.js';
 
 const $ = (id) => document.getElementById(id);
@@ -27,7 +29,7 @@ function sizePreview() {
 }
 
 function drawState() {
-  drawCover(ctx, state, resolvePanels(state, library), previewW, previewH);
+  drawCover(ctx, { ...state, panels: resolvePanels(state, library) }, previewW, previewH);
 }
 
 function redraw() {
@@ -70,7 +72,7 @@ function renderPanels() {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'panel-btn' + (state.selected === i ? ' selected' : '');
-    b.textContent = `${i === 0 ? 'Hero' : 'Panel ' + i} — ${panel.role}`;
+    b.textContent = `${PANEL_ROLES[i]} — ${panel.chip.place}`;
     b.addEventListener('click', () => {
       state.selected = i;
       redraw();
@@ -83,7 +85,7 @@ function syncPanelControls() {
   renderPanels();
   const panel = state.panels[state.selected];
   $('zoom').value = String(panel.zoom ?? 1);
-  $('chip-role').value = panel.role;
+  $('role').value = panel.role;
   $('chip-place').value = panel.chip.place;
   $('chip-time').value = panel.chip.time;
   $('chip-quip').value = panel.chip.quip;
@@ -141,7 +143,7 @@ function exportCover() {
   const off = document.createElement('canvas');
   off.width = w;
   off.height = h;
-  drawCover(off.getContext('2d'), state, resolvePanels(state, library), w, h);
+  drawCover(off.getContext('2d'), { ...state, panels: resolvePanels(state, library) }, w, h);
   return new Promise((resolve) => {
     off.toBlob((blob) => {
       const name = `vice-at-3am-${state.size}.png`;
@@ -161,7 +163,7 @@ function bindControls() {
   $('subtitle').addEventListener('input', (e) => { state.subtitle = e.target.value; redraw(); });
   $('tagline').addEventListener('input', (e) => { state.tagline = e.target.value.toUpperCase(); redraw(); });
   $('quote').addEventListener('input', (e) => { state.quote = e.target.value.toUpperCase(); redraw(); });
-  $('chip-role').addEventListener('input', (e) => { state.panels[state.selected].role = e.target.value.toUpperCase(); redraw(); });
+  $('role').addEventListener('input', (e) => { state.panels[state.selected].role = e.target.value.toUpperCase(); redraw(); });
   $('chip-place').addEventListener('input', (e) => { state.panels[state.selected].chip.place = e.target.value; redraw(); });
   $('chip-time').addEventListener('input', (e) => { state.panels[state.selected].chip.time = e.target.value; redraw(); });
   $('chip-quip').addEventListener('input', (e) => { state.panels[state.selected].chip.quip = e.target.value; redraw(); });
@@ -188,7 +190,7 @@ function bindControls() {
     redraw();
   });
   $('export').addEventListener('click', exportCover);
-  attachCanvasGestures(canvas, state, library, redraw);
+  attachCanvasGestures(canvas, state, library, redraw, () => ({ w: previewW, h: previewH }));
 }
 
 // --- Fixed scenes for screenshots: ?shot=cover shows the cover alone
@@ -239,8 +241,7 @@ async function boot() {
     ]);
     redraw();
   }
-  status.textContent = 'Ready — pick a panel, then a photo from the library.';
-  window.__viceAt3am = { state, library, exportCover, drawState };
+  window.__viceAt3am = { state, library, exportCover, drawState, loadImage };
 }
 
 boot().catch((err) => {
